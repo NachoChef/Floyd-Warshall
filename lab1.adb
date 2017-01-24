@@ -25,7 +25,7 @@ BEGIN
 
 END lab1;
 
-PROCEDURE Warshall (arr : in array(Positive range <>, Positive range <>) of Integer in 0..1) return array(Positive range <>, Positive range <>) of Integer in 0..1 IS
+PROCEDURE Warshall (arr : in array(Positive range <>, Positive range <>) of Integer range 0..1) return array(Positive range <>, Positive range <>) of Integer range 0..1 IS
 BEGIN
    for j in 1..Size loop
       for i in 1..Size loop
