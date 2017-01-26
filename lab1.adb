@@ -36,3 +36,9 @@ BEGIN
    END LOOP;
    return arr;         
 END Warshall;
+
+generic
+   type subscript is (<>);
+package genericArray is
+   type userDefinedArray is array(subscript range <>, subscript range <>) of Integer range 0..1;
+end genericArray;
