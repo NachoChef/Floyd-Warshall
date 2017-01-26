@@ -25,16 +25,16 @@ BEGIN
 
 END lab1;
 
-PROCEDURE Warshall (arr : in array(Positive range <>, Positive range <>) of Integer range 0..1) return array(Positive range <>, Positive range <>) of Integer range 0..1 IS
+PROCEDURE Warshall (arr : in out genericArray) IS
 BEGIN
-   for j in 1..Size loop
-      for i in 1..Size loop
-         for k in 1..Size loop
+   for j in arr'Range loop
+      for i in arr'Range loop
+         for k in arr'Range loop
             arr[i,k] := arr[i,k] OR (arr[i,j] AND arr[j,k]);
+            Put ("Value at arr " + myType'Image(i) + myType'Image(k) + " is " + myType'Image(arr[i,k]));
          END LOOP;
       END LOOP;
-   END LOOP;
-   return arr;         
+   END LOOP;        
 END Warshall;
 
 generic
