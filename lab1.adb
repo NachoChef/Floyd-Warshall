@@ -1,9 +1,11 @@
 WITH Ada.Text_IO; USE Ada.Text_IO;
 WITH Ada.Integer_Text_IO; USE Ada.Integer_Text_IO;
+WITH genericArray;
 
 
 PROCEDURE lab1 IS
    Size : Integer;
+   myType : 
    
 BEGIN
    --allocating & initializing the BMR in stack
@@ -16,9 +18,9 @@ END lab1;
 
 PROCEDURE Warshall (arr : in out myArrayType) IS
 BEGIN
-   for i in arr'Range LOOP
-      for j in arr'Range LOOP
-         if A(j,i) THEN
+   FOR i in arr'Range LOOP
+      FOR j in arr'Range LOOP
+         IF A(j,i) THEN
             for k in arr'Range LOOP
                arr(j,k) := arr(j,k) OR arr(i,k);
             END LOOP;
