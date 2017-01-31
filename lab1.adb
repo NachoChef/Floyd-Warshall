@@ -4,34 +4,24 @@ WITH Ada.Integer_Text_IO; USE Ada.Integer_Text_IO;
 
 PROCEDURE lab1 IS
    Size : Integer;
-
-   --generic instantiation
-   TYPE BMR IS
-      ARRAY (Integer RANGE <>, Integer RANGE <>) OF Integer RANGE 0..1;
-
+   
 BEGIN
    --allocating & initializing the BMR in stack
-   Put("Enter the size of the BMR: "); Get(Size);
-   DECLARE
-      Arr : BMR(1..Size, 1..Size);
-   BEGIN
-      FOR I IN 1..Size LOOP
-         FOR J IN 1..Size LOOP
-               Arr (I, J) := 0;
-         END LOOP;
-      END LOOP;
-   END;
-
+   Get(Size);
+   Get(myType);
+   package myArrayType is new genericArray (Size, myType);
+   use myArrayType;
 
 END lab1;
 
-PROCEDURE Warshall (arr : in out genericArray) IS
+PROCEDURE Warshall (arr : in out myArrayType) IS
 BEGIN
-   for j in arr'Range loop
-      for i in arr'Range loop
-         for k in arr'Range loop
-            arr[i,k] := arr[i,k] OR (arr[i,j] AND arr[j,k]);
-            Put ("Value at arr " + myType'Image(i) + myType'Image(k) + " is " + myType'Image(arr[i,k]));
+   for i in arr'Range LOOP
+      for j in arr'Range LOOP
+         if A(j,i) THEN
+            for k in arr'Range LOOP
+               arr(j,k) := arr(j,k) OR arr(i,k);
+            END LOOP;
          END LOOP;
       END LOOP;
    END LOOP;        
