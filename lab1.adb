@@ -5,8 +5,8 @@ WITH genericArray;
 
 PROCEDURE lab1 IS
    Size : Integer;
-   myType : 
-   
+   myType : String;
+
 BEGIN
    --allocating & initializing the BMR in stack
    Get(Size);
@@ -26,7 +26,7 @@ BEGIN
             END LOOP;
          END LOOP;
       END LOOP;
-   END LOOP;        
+   END LOOP;
 END Warshall;
 
 generic

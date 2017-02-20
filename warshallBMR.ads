@@ -1,14 +1,16 @@
 with warshallBMR;
-generic
-   type arrayElement is private;
-   type inFile is (<>);
-   type outFile is (<>);
-   with function "OR" (X, Y : arrayElement) return Boolean;
+generic 
+   type inFile is private;
+   type outFile is private;
+   with function "OR" (X, Y : integer) return Boolean;
+   type myBMR is array(Positive range <>, Positive range <>) of Integer range 0..1;
+   type names is array(Positive range <>) of string;
 package warshallBMR is
-   procedure construct(BMR: out array(range <>, range <>) of arrayElement;
-                       inFile, outFile : in string(10));
-   procedure warshall(BMR : in out array(range <>, range <>) of arrayElement);
-   procedure writeBMR(BMR : in out array(range <>, range <>) of arrayElement);
+   procedure construct(BMR: out myBMR;
+                       inFile, outFile : in string);
+   procedure warshall(BMR : in out myBMR);
+   procedure writeBMR(BMR : in myBMR);
+   function Check(nameArr : in names; item : in string) return Boolean;
 end warshallBMR;
 
 
