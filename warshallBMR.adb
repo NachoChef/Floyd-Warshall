@@ -1,83 +1,65 @@
 --Justin Jones
---COSC 3319 Spring 17
+--COSC 3319 Spring 2017
 --Lab 1
+--
+--'A' Option
 
-package body warshallBMR is
-   type inFile is private;
-   type outFile is private;   
-   function Check (nameArr : in names; item : in string) return boolean is
-   temp : boolean := true;
+package body warshallBMR is  
+   function Check(nameArr : in myNames; item : in subscript) return boolean is
    begin
-      for i in 1..nameArr'Size loop
-         if nameArr(i) = item then
-            temp := false;
+      for loc in 1..nameArr'Length loop
+         if nameArr(loc) = item then
+            return false;
          end if;
       end loop;
-      return temp;
-   end Check; 
+      return true;
+   end check;
    
-   procedure construct(BMR: out myBMR) is
-      input, output : File_Type;
-      size : integer;
+   function getPos (names : in myNames; val : in subscript) return integer is
    begin
-      Open(input, inFile);
-      Get(input, size);
-      declare
-         NameArray : array(1..Size) of String(10);
-         BMR : array(1..size, 1..size) of integer range 0..1 := (others => 0); 
-         temp : String(10);
-         count : Integer := 1;
-         type relRec is       --this is to keep the relations temporarily organized before use
-            record
-               from : string(10);
-               to : string(10);
-            end record;
-         relation : relRec;
-      begin
-         while not End_Of_File(input) loop
-            Get(input, temp);
-            if Check(nameArray,temp) then    --if haven't seen name, save to name array
-               nameArray(count) := temp;
-               count := count + 1;
-            end if;
-            relation.from := temp;           --set relation 'from'
-            Get(input, temp);
-            if Check(nameArray,temp) then
-               nameArray(count) := temp;
-               count := count + 1;
-            end if;
-            relation.to := temp;             --set relation 'to'
-            BMR(relation.from)(relation.to) := 1; --1 => true
-         end loop;                           --do this until done with file
-         --array should now be populated, so we close the file
-         Close(input);
-      end;
-   end construct;
-
-   procedure warshall(BMR : in out myBMR) is
-   begin
-      for i in 1..BMR'Size loop
-         for j in 1..BMR'Size loop
-            if A(i,j) > 0 then   --'false' is interpreted as 0, so this works for integer & bool
-               for k in 1..BMR'Size loop
-                  A(j,k) := A(j,k) OR A(i,k);
-               end loop;
-            end if;
-         end loop;
+      for i in 1..names'Size loop
+         if val = names(i) then
+            return i;
+         end if;
       end loop;
-   end warshall;
-
-   procedure writeBMR(BMR : in myBMR) is
-      output : File_Type;
+      return 0;
+   end getPos;
+   
+   procedure writeBMR(BMR : in myBMR; names : in myNames) is
    begin
-      Open(output, outFile);
-      for row in BMR'Size loop
-         for col in BMR'Size loop
-            Put(BMR(row)(col));
+      put(" ");
+      for k in 1..names'Length loop
+         put("          " & names(k));
+      end loop;
+      New_Line;   
+      for i in 1..BMR'Length loop
+         Put(names(i));
+         for j in 1..BMR'Length loop
+            if BMR(i,j) = false then
+               Put(0);
+            else
+               Put(1);
+            end if;
          end loop;
          New_Line;
       end loop;
-    end writeBMR;
-      
+   end writeBMR;
+   
+   procedure construct(BMR: out myBMR) is
+   begin
+      Get(temp1); Get(temp2);
+         while temp1 /= 'x' or temp2 /= 'x' loop
+            if check(names, temp1) then
+               names(count) := temp1;
+               count := count + 1;
+            end if;
+            if check(names, temp2) then
+               names(count) := temp2;
+               count := count + 1;
+            end if;
+            BMR(getPos(names, temp1),getPos(names, temp2)) := true;
+            Get(temp1); Get(temp2);
+         end loop;
+   end construct;   
 
 end warshallBMR;
