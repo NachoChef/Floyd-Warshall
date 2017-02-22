@@ -4,8 +4,11 @@
 --
 --'A' Option
 
+
+
 package body warshallBMR is  
-   function Check(nameArr : in myNames; item : in subscript) return boolean is
+
+   function check(nameArr : in myNames; item : in label) return Boolean is
    begin
       for loc in 1..nameArr'Length loop
          if nameArr(loc) = item then
@@ -15,7 +18,7 @@ package body warshallBMR is
       return true;
    end check;
    
-   function getPos (names : in myNames; val : in subscript) return integer is
+   function getPos(names : in myNames; val : in label) return integer is
    begin
       for i in 1..names'Size loop
          if val = names(i) then
@@ -25,41 +28,66 @@ package body warshallBMR is
       return 0;
    end getPos;
    
-   procedure writeBMR(BMR : in myBMR; names : in myNames) is
+   procedure writeBMR(BMR : in myBMR; names : in myNames; file : string) is
    begin
       put(" ");
       for k in 1..names'Length loop
-         put("          " & names(k));
+         Write(names(k));
       end loop;
       New_Line;   
       for i in 1..BMR'Length loop
-         Put(names(i));
+         Write(names(i));
          for j in 1..BMR'Length loop
-            if BMR(i,j) = false then
-               Put(0);
+            if BMR(i,j) = 1 then
+               Write(0);
             else
-               Put(1);
+               Write(1);
             end if;
          end loop;
          New_Line;
       end loop;
    end writeBMR;
    
-   procedure construct(BMR: out myBMR) is
+   procedure construct(BMR: out myBMR; file : string) is
+      inputFile : File_Type;
+      size : integer;
    begin
-      Get(temp1); Get(temp2);
-         while temp1 /= 'x' or temp2 /= 'x' loop
-            if check(names, temp1) then
-               names(count) := temp1;
-               count := count + 1;
+      Open(inputFile, file);
+      Get(size);
+      declare
+         names : myNames(1..size);
+         bmr : myBMR(1..size, 1..size);
+         temp1, temp2 : label;
+         count : integer := 1;
+      begin
+         Get(inputFile, temp1); 
+         jGet(inputFile, temp2);
+            while not inputFile.End_of_File loop
+               if check(names, temp1) then
+                  names(count) := temp1;
+                  count := count + 1;
+               end if;
+               if check(names, temp2) then
+                  names(count) := temp2;
+                  count := count + 1;
+               end if;
+               bmr(getPos(names, temp1),getPos(names, temp2)) := 1;
+               Get(inputFile, temp1); Get(inputFile, temp2);
+            end loop;
+      end;
+   end construct;
+   
+   procedure transitive_closure(bmr : in out myBMR) is
+   begin
+      for i in 1..bmr'Length loop
+         for j in 1..bmr'Length loop
+            if bmr(j,i) = 1 then
+               for k in 1..bmr'Length loop
+                  bmr(i,j) := bmr(j,k) OR bmr(i,k);
+               end loop;
             end if;
-            if check(names, temp2) then
-               names(count) := temp2;
-               count := count + 1;
-            end if;
-            BMR(getPos(names, temp1),getPos(names, temp2)) := true;
-            Get(temp1); Get(temp2);
          end loop;
-   end construct;   
+      end loop;
+   end transitive_closure;
 
 end warshallBMR;
