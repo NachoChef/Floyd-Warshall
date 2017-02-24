@@ -3,18 +3,17 @@
 --Lab 1
 --
 --'A' Option
-with Ada.Sequential_IO;
-generic 
+
+generic
    type label is private;
-   type elementType(<>) is private;
-   with procedure put (X : label);
-   with function "OR" (X, Y : integer) return Boolean;
+   with procedure myPut (X : label);
+   with function "OR" (X, Y : integer) return integer;
 package warshallBMR is
-   type label_IO is new Ada.Sequential_IO(label);
-   type myBMR is array(Positive range <>, Positive range <>) of integer;
+   type myBMR is array(Positive range <>, Positive range <>) of integer range 0..1;
    type myNames is array(Positive range <>) of label;
    procedure construct(BMR : out myBMR; file : string);
    procedure writeBMR(BMR : in myBMR; names : in myNames; file : string);
    procedure transitive_closure(BMR : in out myBMR);
+   procedure insert(nameArr : in out myNames; item : in label);
    function check(nameArr : in myNames; item : in label) return Boolean;
 end warshallBMR;
