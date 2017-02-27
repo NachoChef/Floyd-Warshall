@@ -3,11 +3,8 @@ with Ada.Text_IO; use Ada.Text_IO;
 
 procedure main is   
 begin
+   
    declare
-      subtype myString is String(1..10);
-      package myStringBMR is new warshallBMR(myString);
-      use myStringBMR;
-      
       function "OR" (X, Y : integer) return integer is
       begin
          if x + y > 0 then
@@ -17,11 +14,16 @@ begin
          end if;
       end "OR";
    
-      procedure myPut (outFile : File_Type; X : label) is
-      begin
-         put(outFile, X);
-      end myPut;  
+      subtype myString is String(1..10);
       
+      procedure myPut (outFile : File_Type; X : myStringBMR.label) is
+      begin
+         Ada.Text_IO.Write(File => outFile, Item => X);
+      end myPut; 
+       
+      
+      package myStringBMR is new warshallBMR(myString, myPut, "OR");
+      use myStringBMR;
       
    begin
       myStringBMR.construct("input.txt", "output.txt");
