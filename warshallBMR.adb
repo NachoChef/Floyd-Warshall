@@ -79,8 +79,8 @@ package body warshallBMR is
       Open(inputFile, in_file, infile);
       Read(inputFile, size);
       declare
-         names : myNames(1..to_int(size));
-         bmr : myBMR(1..to_int(size), 1..to_int(size)) := (others => (others => 0));
+         names : myNames(1..eval(size));
+         bmr : myBMR(1..eval(size), 1..eval(size)) := (others => (others => 0));
          temp1, temp2 : label;
          pos1, pos2 : integer;
       begin
@@ -106,7 +106,7 @@ package body warshallBMR is
          when label_IO.Name_Error =>
             Ada.Text_IO.Put_Line("File does not exist.");
             raise;
-         when label_IO.End_of_File =>
+         when label_IO.End_Error =>
             Close(inputFile);
             Ada.Text_IO.Put("File is missing part of a relation.");
             raise;
