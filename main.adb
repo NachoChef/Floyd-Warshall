@@ -14,19 +14,15 @@ begin
          end if;
       end "OR";
    
-      subtype myString is String(1..2);
+      subtype myString is String(1..10);
       
-      procedure myPut (outFile : File_Type; X : myString) is
+      procedure myPut (outFile : File_Type; X : myStringBMR.label) is
       begin
-         Ada.Text_IO.Put(File => outFile, Item => X);
+         Ada.Text_IO.Write(File => outFile, Item => X);
       end myPut; 
-      
-      function eval (X : myString) return integer is
-      begin
-         return Integer'Value(X);
-      end eval;
        
-      package myStringBMR is new warshallBMR(myString, myPut, "OR", eval);
+      
+      package myStringBMR is new warshallBMR(myString, myPut, "OR");
       use myStringBMR;
       
    begin
