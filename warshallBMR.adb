@@ -7,48 +7,30 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body warshallBMR is  
 
    --parses for unique names, returns true if item NOT in array
-   function check(nameArr : in myNames; item : in label) return boolean is
+   function check(nameArr : in myNames; item : in label; last : in integer) return boolean is
+      temp : boolean := true;
    begin
-      for loc in 1..nameArr'Length loop
-         if nameArr(loc) = item then
-            return false;
-         end if;
-      end loop;
-      return true;
-   end check;
-   
-   --insert name into array in lexicographical order
-   procedure insert(nameArr : in out myNames; item : in label) is
-   begin
-      if nameArr'Length = 0 then
-         nameArr(1) := item;
-      else
-         for loc in nameArr'Length..1 loop
-            if to_int(item) < to_int (nameArr(loc)) then
-               nameArr(loc+1) := nameArr(loc);
-            else
-               nameArr(loc) := item;
+      if last >= nameArr'Size then
+         temp := false;
+      else      
+         for loc in 1..(last-1) loop
+            if nameArr(loc) = item then
+               temp := false;
             end if;
          end loop;
       end if;
-   end insert;
+      return temp;
+   end check;
    
    --retrieves position of a BMR label for BMR correlation
-   procedure getPos(nameArr : in myNames; val : in label; pos : out integer) is
-      mid : integer := 1;
+   function getPos(nameArr : in myNames; val : in label) return integer is
    begin
-      if nameArr'Length = 0 then
-        pos := 1;
-      else
-        mid := (nameArr'First + nameArr'Last) / 2;
-        if to_int (nameArr(mid)) = to_int(val) then
-           pos := mid;
-        elsif to_int (nameArr(mid)) > to_int (val) then
-           getPos(nameArr(nameArr'First..mid-1), val, pos);
-        else
-           getPos(nameArr(mid+1..nameArr'Last), Val, pos);
+      for loc in 1..nameArr'Length loop
+        if nameArr(loc) = val then
+           return loc;
         end if;
-     end if;
+      end loop;
+      return 0;
    end getPos;
    
    --writes BMR to file, name specified
@@ -74,28 +56,35 @@ package body warshallBMR is
    --build BMR, compute transitive closure, write to outfile
    procedure construct(infile, outfile : in string) is
       inputFile : label_IO.File_Type;
-      size : label;
+      temp : label;
+      size : integer;
    begin
       Open(inputFile, in_file, infile);
-      Read(inputFile, size);
-      declare
-         names : myNames(1..to_int(size));
-         bmr : myBMR(1..to_int(size), 1..to_int(size)) := (others => (others => 0));
+      Read(inputFile, temp);
+      size := eval (temp);
+      put(Integer'Image(size));
+      declare  
+         names : myNames(1..size);
+         bmr : myBMR(1..size, 1..size) := (others => (others => 0));
          temp1, temp2 : label;
-         pos1, pos2 : integer;
+         count : integer := 1;
       begin
          Read(inputFile, temp1); 
          Read(inputFile, temp2);            
          while not End_of_File(inputFile) loop
-            if check(names, temp1) then
-               insert(names, temp1);
+            if check(names, temp1, count) then
+               names(count) := temp1;
+               count := count + 1;
+               Ada.Text_IO.Put(Integer'Image(count));
             end if;
-            if check(names, temp2) then
-               insert(names, temp1);
+            if check(names, temp2, count) then
+               names(count) := temp2;
+               count := count + 1;
+               Ada.Text_IO.Put(Integer'Image(count));
             end if;
-            getPos(names, temp1, pos1);
-            getPos(names, temp2, pos2);
-            bmr(pos1, pos2) := 1;
+            if temp1 /= temp2 then
+               bmr(getPos(names, temp1), getPos(names, temp2)) := 1;
+            end if;
             Read(inputFile, temp1);
             Read(inputFile, temp2);
             end loop;
@@ -106,7 +95,7 @@ package body warshallBMR is
          when label_IO.Name_Error =>
             Ada.Text_IO.Put_Line("File does not exist.");
             raise;
-         when label_IO.End_of_File =>
+         when label_IO.End_Error =>
             Close(inputFile);
             Ada.Text_IO.Put("File is missing part of a relation.");
             raise;
