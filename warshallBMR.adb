@@ -4,28 +4,13 @@
 --
 --'A' Option
 with Ada.Text_IO; use Ada.Text_IO;
+
 package body warshallBMR is  
 
-   --parses for unique names, returns true if item NOT in array
-   function check(nameArr : in myNames; item : in label; last : in integer) return boolean is
-      temp : boolean := true;
-   begin
-      if last >= nameArr'Size then
-         temp := false;
-      else      
-         for loc in 1..(last-1) loop
-            if nameArr(loc) = item then
-               temp := false;
-            end if;
-         end loop;
-      end if;
-      return temp;
-   end check;
-   
    --retrieves position of a BMR label for BMR correlation
    function getPos(nameArr : in myNames; val : in label) return integer is
    begin
-      for loc in 1..nameArr'Length loop
+      for loc in nameArr'range loop
         if nameArr(loc) = val then
            return loc;
         end if;
@@ -62,35 +47,24 @@ package body warshallBMR is
       Open(inputFile, in_file, infile);
       Read(inputFile, temp);
       size := eval (temp);
-      put(Integer'Image(size));
       declare  
          names : myNames(1..size);
          bmr : myBMR(1..size, 1..size) := (others => (others => 0));
          temp1, temp2 : label;
-         count : integer := 1;
       begin
-         Read(inputFile, temp1); 
-         Read(inputFile, temp2);            
+         for i in 1..size loop
+            Read(inputFile, names(i));
+         end loop;
          while not End_of_File(inputFile) loop
-            if check(names, temp1, count) then
-               names(count) := temp1;
-               count := count + 1;
-               Ada.Text_IO.Put(Integer'Image(count));
-            end if;
-            if check(names, temp2, count) then
-               names(count) := temp2;
-               count := count + 1;
-               Ada.Text_IO.Put(Integer'Image(count));
-            end if;
-            if temp1 /= temp2 then
-               bmr(getPos(names, temp1), getPos(names, temp2)) := 1;
-            end if;
             Read(inputFile, temp1);
             Read(inputFile, temp2);
-            end loop;
-      Close(inputFile);
-      transitive_closure(bmr);
-      writeBMR(bmr, names, outfile);
+            labelput(temp1);
+            labelput(temp2);
+            bmr(getPos(names, temp1), getPos(names, temp2)) := 1;
+         end loop;
+         Close(inputFile);
+         transitive_closure(bmr);
+         writeBMR(bmr, names, outfile);
       exception
          when label_IO.Name_Error =>
             Ada.Text_IO.Put_Line("File does not exist.");

@@ -18,13 +18,19 @@ begin
             return 0;
          end if;
       end "OR";
-   
+         
       subtype myString is String(1..3);
       
       procedure myPut (outFile : File_Type; X : myString) is
       begin
          Ada.Text_IO.Put(File => outFile, Item => X);
       end myPut; 
+      
+      procedure labelput (X : myString) is
+      begin
+         Ada.Text_IO.Put_Line(Item => X);
+      end labelput;
+        
       
       function eval (X: myString) return integer is
          temp : integer;
@@ -33,7 +39,7 @@ begin
          return temp;
       end eval;
 
-      package myStringBMR is new warshallBMR(myString, myPut, "OR", eval);
+      package myStringBMR is new warshallBMR(myString, myPut, "OR", eval, labelput);
       use myStringBMR;
       
    begin
