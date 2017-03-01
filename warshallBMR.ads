@@ -5,14 +5,12 @@
 --'A' Option
 with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Sequential_IO;
-with Ada.Unchecked_Conversion;
 
 generic
    type label is private;
    with procedure myPut (outFile : File_Type; X : label);
-   with function "OR" (X, Y : integer) return integer;
+   with function "OR" (X, Y : integer) return integer; 
    with function eval (X : label) return integer;
-   with procedure labelput (X : label);
 package warshallBMR is
    type myBMR is array(Positive range <>, Positive range <>) of integer range 0..1;
    type myNames is array(Positive range <>) of label;
@@ -21,5 +19,5 @@ package warshallBMR is
    procedure transitive_closure(BMR : in out myBMR);
    function getPos(nameArr : in myNames; val : in label) return integer;
    package label_IO is new Ada.Sequential_IO(label);
-   use label_IO; 
+   use label_IO;
 end warshallBMR;

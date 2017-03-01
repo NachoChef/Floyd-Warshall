@@ -5,11 +5,14 @@
 --'A' Option
 with warshallBMR; 
 with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Integer_Text_IO;
 
 procedure main is   
 begin
-   
    declare
+      --discrete subtype for generic
+      subtype myString is String(1..3);
+      
       function "OR" (X, Y : integer) return integer is
       begin
          if x + y > 0 then
@@ -18,30 +21,20 @@ begin
             return 0;
          end if;
       end "OR";
-         
-      subtype myString is String(1..3);
       
+      --IO overload
       procedure myPut (outFile : File_Type; X : myString) is
       begin
-         Ada.Text_IO.Put(File => outFile, Item => X);
-      end myPut; 
+         Ada.Text_IO.Put(File => outFile, Item => ("  " & X));
+      end myPut;
       
-      procedure labelput (X : myString) is
-      begin
-         Ada.Text_IO.Put_Line(Item => X);
-      end labelput;
-        
-      
+      --parses integer out of generic
       function eval (X: myString) return integer is
-         temp : integer;
       begin
-         temp := Character'Pos(X(1)) - 48;
-         return temp;
+         return Integer'Value(X);
       end eval;
-
-      package myStringBMR is new warshallBMR(myString, myPut, "OR", eval, labelput);
-      use myStringBMR;
-      
+  
+      package myStringBMR is new warshallBMR(myString, myPut, "OR", eval);      
    begin
       myStringBMR.construct("a_input.txt", "a_output.txt");
    end; 
