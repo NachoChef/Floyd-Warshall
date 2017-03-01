@@ -8,15 +8,16 @@ with Ada.Text_IO; use Ada.Text_IO;
 package body warshallBMR is  
 
    --retrieves position of a BMR label for BMR correlation
-   function getPos(nameArr : in myNames; val : in label) return integer is
+   --requires nameArr sorted in lexicographical order
+   function map (nameArr : in myNames; val : in label) return integer is
    begin
-      for loc in nameArr'range loop
-        if nameArr(loc) = val then
-           return loc;
-        end if;
+      for loc in nameArr'Range loop
+         if nameArr(loc) = val then
+            return loc;
+         end if;
       end loop;
-      return 0;
-   end getPos;
+      return 0;      --if item not found, will cause index check error
+   end map;
    
    --writes BMR to file, name specified
    procedure writeBMR(BMR : in myBMR; names : in myNames; file : string) is
@@ -54,15 +55,14 @@ package body warshallBMR is
          bmr : myBMR(1..size, 1..size) := (others => (others => 0));
          temp1, temp2 : label;
       begin
-         for i in 1..names'Length loop
-            Read(inputFile, temp1);
-            labelput(temp1);
+         for i in names'Range loop
+            Read (inputFile, temp1);
             names(i) := temp1;
          end loop;
-         while not End_of_File(inputFile) loop
-            Read(inputFile, temp1);
-            Read(inputFile, temp2);
-            bmr(getPos(names, temp1), getPos(names, temp2)) := 1;
+         while not End_of_File (inputFile) loop
+            Read (inputFile, temp1);
+            Read (inputFile, temp2);
+            bmr(map (names, temp1), map (names, temp2)) := 1;
          end loop;
          Close(inputFile);
          transitive_closure(bmr);

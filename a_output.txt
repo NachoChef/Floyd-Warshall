@@ -1,0 +1,11 @@
+       Ada  Bob  Joe  Jim  Ken  Sam  Sue  Tim  Tom
+  Ada    1    0    0    1    0    0    0    0    0
+  Bob    1    0    0    1    0    0    0    0    0
+  Joe    0    0    1    0    1    0    1    1    1
+  Jim    1    0    0    1    0    0    0    0    0
+  Ken    0    0    1    0    1    0    1    1    1
+  Sam    0    0    0    0    0    0    0    0    0
+  Sue    0    0    1    0    1    0    1    1    1
+  Tim    0    0    1    0    1    0    1    1    1
+  Tom    0    0    1    0    1    0    1    1    1
+
